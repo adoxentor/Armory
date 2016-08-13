@@ -1,0 +1,11 @@
+{
+    "parent": "builtin/generated",
+    "textures": {
+        "layer0": "tconstruct:items/lumberaxe/head"
+    },
+    "offset": {
+        "x": -3,
+        "y": 4,
+        "z": 3
+    }
+}

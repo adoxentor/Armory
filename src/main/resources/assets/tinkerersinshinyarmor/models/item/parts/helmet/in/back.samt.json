@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "layer0": "tinkerersinshinyarmor:models/item/parts/helmet/in/back"
+  },
+  "TRSR":{
+    "translation": [ 0, 0,0.46875 ],
+    "scale": [1, 1, 1 ],
+    "rotation":[{"x":0},{"y":0},{"z":0} ]
+  }
+}

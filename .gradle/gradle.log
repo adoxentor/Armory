@@ -4,10 +4,61 @@ Cannot run the CurseUpload sequence. No API-Key was available.Cannot run the Cur
 
 The sync of the branches is not being executed, because we are not releasing a new version.The sync of the branches is not being executed, because we are not releasing a new version.
 
-Found AccessTransformer: jei_at.cfg_jei_1.10.2-3.7.6.232_at.cfg
-Found AccessTransformer: SmithsCore_at.cfg_smithscore-1.10.2-1.2.0.0-200_at.cfg
+#################################################
+         ForgeGradle 2.2-SNAPSHOT-0447b4e        
+  https://github.com/MinecraftForge/ForgeGradle  
+#################################################
+               Powered by MCP unknown               
+             http://modcoderpack.com             
+         by: Searge, ProfMobius, Fesh0r,         
+         R4wk, ZeuX, IngisKahn, bspkrs           
+#################################################
+Found AccessTransformer: jei_at.cfg_jei_1.10.2-3.7.12.239_at.cfg
+Found AccessTransformer: SmithsCore_at.cfg_smithscore-1.10.2-1.2.0.0-236_at.cfg
 Found AccessTransformer: Armory_at.cfg
+:extractMcpMappings SKIPPED
+:deobfCompileDeobfDepTask0 SKIPPED
+:deobfCompileDeobfDepTask1 SKIPPED
+:deobfCompileRemapDepSourcesTask2 SKIPPED
+:deobfCompileRemapDepSourcesTask3 SKIPPED
+:deobfCompileDummyTask
+:deobfProvidedDummyTask
+:getVersionJson
+:extractUserdev UP-TO-DATE
+:extractDependencyATs UP-TO-DATE
+:extractMcpData SKIPPED
+:genSrgs SKIPPED
+:downloadClient SKIPPED
+:downloadServer SKIPPED
+:splitServerJar SKIPPED
+:mergeJars SKIPPED
+:deobfMcSRG SKIPPED
+:decompileMc
+:fixMcSources
+:applySourcePatches
+:remapMcSources
+:recompileMc
+:extractNatives SKIPPED
+:getAssetIndex UP-TO-DATE
+:getAssets
+Current status: 82/1112   7%
+Current status: 144/1112   12%
+Current status: 184/1112   16%
+Current status: 261/1112   23%
+Current status: 332/1112   29%
+Current status: 356/1112   32%
+Current status: 473/1112   42%
+Current status: 564/1112   50%
+Current status: 641/1112   57%
+Current status: 705/1112   63%
+Current status: 825/1112   74%
+Current status: 865/1112   77%
+Current status: 932/1112   83%
+Current status: 983/1112   88%
+Current status: 1090/1112   98%
+:makeStart
+:setupDecompWorkspace
 
 BUILD SUCCESSFUL
 
-Total time: 1.186 secs
+Total time: 6 mins 58.058 secs
