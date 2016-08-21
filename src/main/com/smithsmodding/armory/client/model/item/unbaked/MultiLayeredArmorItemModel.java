@@ -7,11 +7,9 @@ import com.smithsmodding.armory.api.armor.MLAAddon;
 import com.smithsmodding.armory.api.armor.MaterialDependentMLAAddon;
 import com.smithsmodding.armory.api.armor.MultiLayeredArmor;
 import com.smithsmodding.armory.api.util.references.ModLogger;
+import com.smithsmodding.armory.client.model.item.baked.BakedArmorPartModel;
 import com.smithsmodding.armory.client.model.item.baked.BakedMultiLayeredArmorItemModel;
-import com.smithsmodding.armory.client.model.item.baked.components.BakedSubComponentModel;
-import com.smithsmodding.armory.client.model.item.unbaked.components.ArmorSubComponentModel;
 import com.smithsmodding.smithscore.client.model.unbaked.ItemLayerModel;
-import com.smithsmodding.smithscore.util.common.Pair;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -28,15 +26,13 @@ import java.util.HashMap;
 public class MultiLayeredArmorItemModel extends ItemLayerModel {
 
     private final MultiLayeredArmor armor;
-    private final ArmorSubComponentModel baseLayer;
-    private final HashMap<String, ArmorSubComponentModel> parts;
-    private final HashMap<String, ArmorSubComponentModel> brokenParts;
+    private final HashMap<String, ArmorPartModel> parts;
+    private final HashMap<String, ArmorPartModel> brokenParts;
     private final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
 
-    public MultiLayeredArmorItemModel(MultiLayeredArmor armor, ImmutableList<ResourceLocation> defaultTextures, ArmorSubComponentModel baseLayer, HashMap<String, ArmorSubComponentModel> parts, HashMap<String, ArmorSubComponentModel> brokenPartBlocks, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms) {
+    public MultiLayeredArmorItemModel(MultiLayeredArmor armor, ImmutableList<ResourceLocation> defaultTextures, HashMap<String, ArmorPartModel> parts, HashMap<String, ArmorPartModel> brokenPartBlocks, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms) {
         super(defaultTextures);
         this.armor = armor;
-        this.baseLayer = baseLayer;
         this.parts = parts;
         this.brokenParts = brokenPartBlocks;
         this.transforms = transforms;
@@ -48,9 +44,8 @@ public class MultiLayeredArmorItemModel extends ItemLayerModel {
         IBakedModel base = super.bake(state, format, bakedTextureGetter);
 
         //Setup the maps that contain the converted baked sub models.
-        Pair<String, BakedSubComponentModel> mappedBaseLayer = null;
-        HashMap<String, BakedSubComponentModel> mappedParts = new HashMap<String, BakedSubComponentModel>();
-        HashMap<String, BakedSubComponentModel> mappedBrokenParts = new HashMap<String, BakedSubComponentModel>();
+        HashMap<String, BakedArmorPartModel> mappedParts = new HashMap<String, BakedArmorPartModel>();
+        HashMap<String, BakedArmorPartModel> mappedBrokenParts = new HashMap<String, BakedArmorPartModel>();
 
         //Check every possible addon for a texture and register it accordingly
         for (final MLAAddon addon : armor.getAllowedAddons()) {
@@ -59,22 +54,21 @@ public class MultiLayeredArmorItemModel extends ItemLayerModel {
                 addonID = ((MaterialDependentMLAAddon) addon).getMaterialIndependentID();
             }
 
-            if (addon.getItemWholeTextureLocation().equals(baseLayer.getTexture()) && mappedBaseLayer == null) {
-                mappedBaseLayer = new Pair<String, BakedSubComponentModel>(addonID, baseLayer.generateBackedComponentModel(state, format, bakedTextureGetter));
-            } else if (parts.containsKey(addon.getItemWholeTextureLocation().toString())) {
-                mappedParts.put(addonID, parts.get(addon.getItemWholeTextureLocation().toString()).generateBackedComponentModel(state, format, bakedTextureGetter));
+            if (parts.containsKey(addonID)) {
+                mappedParts.put(addonID, parts.get(addonID).generateBakedComponentModel(state, format, bakedTextureGetter));
 
                 //If a part was found, also check for its broken counterpart.
-                if (brokenParts.containsKey(addon.getItemBrokenTextureLocation().toString())) {
-                    mappedBrokenParts.put(addonID, parts.get(addon.getItemBrokenTextureLocation().toString()).generateBackedComponentModel(state, format, bakedTextureGetter));
+                if (brokenParts.containsKey(addonID)) {
+                    mappedBrokenParts.put(addonID, parts.get(addonID).generateBakedComponentModel(state, format, bakedTextureGetter));
                 }
-            } else if (!addon.getItemWholeTextureLocation().equals(baseLayer.getTexture())) {
+            }
+            else
                 //For a given MLAAddon on the armor was no texture found.
                 ModLogger.getInstance().error("A given armor: " + armor.getUniqueID() + " has a MLAAddon: " + addon.getUniqueID() + " that has no texture registered in the model. It is being skipped.");
-            }
+
         }
 
         //Bake the model.
-        return new BakedMultiLayeredArmorItemModel(base, mappedBaseLayer, mappedParts, mappedBrokenParts, transforms);
+        return new BakedMultiLayeredArmorItemModel(base, mappedParts, mappedBrokenParts, transforms);
     }
 }

@@ -1,10 +1,15 @@
-package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
+package com.smithsmodding.armory.api.Client;
 
+import com.smithsmodding.armory.api.Client.IArmorPartRenderer;
+import com.smithsmodding.armory.api.Client.ModelType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -56,7 +61,10 @@ public class BodyArmorPartRenderer implements IArmorPartRenderer {
 
 
         Minecraft minecraft = Minecraft.getMinecraft();
-        minecraft.getRenderItem().renderItem(itemStack,model);
+        minecraft.getRenderItem().renderItem(new ItemStack(Items.APPLE), ItemCameraTransforms.TransformType.NONE);
+//        minecraft.getRenderItem().renderItem(itemStack,model);
+        minecraft.getRenderItem().renderItem(new ItemStack(Items.APPLE),model);
+
 
         GlStateManager.popMatrix();
 
@@ -133,6 +141,9 @@ public class BodyArmorPartRenderer implements IArmorPartRenderer {
         public float rotationPointX=0;
         public float rotationPointY=0;
         public float rotationPointZ=0;
+    }
+
+    public static void pre(){
     }
 
 }

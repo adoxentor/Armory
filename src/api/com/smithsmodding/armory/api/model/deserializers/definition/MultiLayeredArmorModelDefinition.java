@@ -1,6 +1,8 @@
 package com.smithsmodding.armory.api.model.deserializers.definition;
 
 import com.google.common.collect.ImmutableMap;
+import com.smithsmodding.armory.api.Client.IArmorPartRenderer;
+import com.smithsmodding.smithscore.util.common.Pair;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -12,13 +14,11 @@ import java.util.Map;
  */
 public class MultiLayeredArmorModelDefinition {
 
-    final ResourceLocation baseLocation;
-    final Map<String, ResourceLocation> layerLocations;
-    final Map<String, ResourceLocation> brokenLocations;
+    final Map<String, Pair<IArmorPartRenderer,ResourceLocation>> layerLocations;
+    final Map<String, Pair<IArmorPartRenderer,ResourceLocation>> brokenLocations;
     final Map<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
 
-    public MultiLayeredArmorModelDefinition(ResourceLocation baseLocation, Map<String, ResourceLocation> layerLocations, Map<String, ResourceLocation> brokenLocations, Map<ItemCameraTransforms.TransformType, TRSRTransformation> transforms) {
-        this.baseLocation = baseLocation;
+    public MultiLayeredArmorModelDefinition( Map<String, Pair<IArmorPartRenderer,ResourceLocation>> layerLocations, Map<String, Pair<IArmorPartRenderer,ResourceLocation>> brokenLocations, Map<ItemCameraTransforms.TransformType, TRSRTransformation> transforms) {
         this.layerLocations = layerLocations;
         this.brokenLocations = brokenLocations;
         this.transforms = transforms;
@@ -27,15 +27,12 @@ public class MultiLayeredArmorModelDefinition {
             throw new IllegalArgumentException("Cannot create a MultiLayeredArmorModel without components!");
     }
 
-    public ResourceLocation getBaseLocation() {
-        return baseLocation;
-    }
 
-    public ImmutableMap<String, ResourceLocation> getLayerLocations() {
+    public ImmutableMap<String, Pair<IArmorPartRenderer,ResourceLocation>> getLayerLocations() {
         return ImmutableMap.copyOf(layerLocations);
     }
 
-    public ImmutableMap<String, ResourceLocation> getBrokenLocations() {
+    public ImmutableMap<String, Pair<IArmorPartRenderer,ResourceLocation>> getBrokenLocations() {
         return ImmutableMap.copyOf(brokenLocations);
     }
 

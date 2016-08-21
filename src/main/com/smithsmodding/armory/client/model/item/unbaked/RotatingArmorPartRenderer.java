@@ -1,5 +1,7 @@
-package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
+package com.smithsmodding.armory.client.model.item.unbaked;
 
+import com.smithsmodding.armory.api.Client.BodyArmorPartRenderer;
+import com.smithsmodding.armory.api.Client.ModelType;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;

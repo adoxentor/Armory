@@ -2,6 +2,7 @@ package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
 
 import com.Adoxentor.TinkerersInShinyArmor.TinkerersInShinyArmor;
 import com.google.common.collect.ImmutableList;
+import com.smithsmodding.smithscore.client.model.unbaked.DummyModel;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -9,12 +10,9 @@ import net.minecraftforge.client.model.*;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
-import slimeknights.tconstruct.library.TinkerRegistry;
-import slimeknights.tconstruct.library.client.CustomTextureCreator;
-import slimeknights.tconstruct.library.client.model.DummyModel;
-import slimeknights.tconstruct.library.client.model.MaterialModel;
-import slimeknights.tconstruct.library.client.model.ModelHelper;
+import org.lwjgl.util.vector.Matrix;
 
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.io.IOException;

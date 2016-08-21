@@ -1,4 +1,4 @@
-package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
+package com.smithsmodding.armory.api.Client;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;

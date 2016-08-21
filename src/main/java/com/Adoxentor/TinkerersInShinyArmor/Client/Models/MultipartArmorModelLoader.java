@@ -1,10 +1,10 @@
 package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
 
 import com.Adoxentor.TinkerersInShinyArmor.TinkerersInShinyArmor;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.smithsmodding.armory.api.Client.IArmorPartRenderer;
+import com.smithsmodding.armory.client.model.item.unbaked.ArmorPartModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -21,9 +21,7 @@ import slimeknights.tconstruct.library.client.model.MaterialModel;
 import slimeknights.tconstruct.library.client.model.ModelHelper;
 import slimeknights.tconstruct.library.client.model.ModifierModel;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 

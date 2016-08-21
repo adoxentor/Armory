@@ -1,15 +1,15 @@
-package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
+package com.smithsmodding.armory.client.model.item.unbaked;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
+import com.smithsmodding.armory.api.Client.IArmorPartRenderer;
+import com.smithsmodding.armory.client.model.item.baked.BakedArmorPartModel;
+import com.smithsmodding.armory.client.model.item.baked.BakedMaterialPart;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import java.util.Collection;
 
@@ -38,9 +38,11 @@ public class ArmorPartModel implements IModel {
 
     @Override
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
-        return bakeIt(state, format, bakedTextureGetter);
+        return generateBakedComponentModel(state, format, bakedTextureGetter);
     }
-    public BakedArmorPartModel bakeIt(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+    public BakedArmorPartModel generateBakedComponentModel(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+        if(parent instanceof ArmorLayerModel)
+            return new BakedMaterialPart(((ArmorLayerModel) parent).generateBakedComponentModel(state,format,bakedTextureGetter),armorPartRenderer);
         return new BakedArmorPartModel(parent.bake(state,format,bakedTextureGetter),armorPartRenderer);
     }
 
@@ -48,4 +50,6 @@ public class ArmorPartModel implements IModel {
     public IModelState getDefaultState() {
         return parent.getDefaultState();
     }
+
+
 }

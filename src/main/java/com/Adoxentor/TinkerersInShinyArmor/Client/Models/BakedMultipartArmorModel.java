@@ -2,7 +2,8 @@ package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import javafx.scene.Parent;
+import com.smithsmodding.armory.client.model.item.unbaked.BakedArmorPartModel;
+import com.smithsmodding.armory.client.model.item.unbaked.BakedSimple;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.block.model.*;

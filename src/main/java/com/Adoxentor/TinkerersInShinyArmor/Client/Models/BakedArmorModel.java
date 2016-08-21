@@ -2,6 +2,7 @@ package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.smithsmodding.armory.client.model.item.unbaked.BakedSimple;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,7 +12,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.TRSRTransformation;
-import org.apache.commons.lang3.tuple.Pair;
 import slimeknights.mantle.client.model.BakedSimple;
 import slimeknights.mantle.client.model.BakedWrapper;
 import slimeknights.tconstruct.library.client.model.BakedMaterialModel;
@@ -19,7 +19,6 @@ import slimeknights.tconstruct.library.utils.TagUtil;
 import slimeknights.tconstruct.library.utils.Tags;
 
 import javax.annotation.Nonnull;
-import javax.vecmath.Matrix4f;
 import java.util.Map;
 
 public class BakedArmorModel extends BakedWrapper.Perspective implements IPerspectiveAwareModel {

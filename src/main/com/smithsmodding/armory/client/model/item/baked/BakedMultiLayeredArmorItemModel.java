@@ -5,22 +5,29 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.smithsmodding.armory.api.armor.MLAAddon;
 import com.smithsmodding.armory.api.armor.MaterialDependentMLAAddon;
-import com.smithsmodding.armory.client.model.item.baked.components.BakedSubComponentModel;
 import com.smithsmodding.armory.util.armor.ArmorNBTHelper;
 import com.smithsmodding.smithscore.client.model.baked.BakedWrappedModel;
 import com.smithsmodding.smithscore.client.model.unbaked.ItemLayerModel;
 import com.smithsmodding.smithscore.util.common.NBTHelper;
-import com.smithsmodding.smithscore.util.common.Pair;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.TRSRTransformation;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 import java.util.*;
 
 /**
@@ -41,28 +48,29 @@ public class BakedMultiLayeredArmorItemModel extends BakedWrappedModel.Perspecti
 
     protected final Overrides overrides;
     protected final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
-    protected Pair<String, BakedSubComponentModel> baseLayer;
-    protected HashMap<String, BakedSubComponentModel> parts;
-    protected HashMap<String, BakedSubComponentModel> brokenParts;
-
+    protected HashMap<String, BakedArmorPartModel> parts;
+    protected HashMap<String, BakedArmorPartModel> brokenParts;
+    protected final IBakedModel parent;
     /**
      * The length of brokenParts has to match the length of parts. If a part does not have a broken texture, the entry in
      * the array simply is null.
      */
-    public BakedMultiLayeredArmorItemModel(IBakedModel parent, Pair baseLayer, HashMap parts, HashMap brokenParts, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms) {
-        super(parent, transforms);
-
+    public BakedMultiLayeredArmorItemModel(IBakedModel parent, HashMap parts, HashMap brokenParts, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms) {
+        super(parent,transforms);
+        this.parent=parent;
         this.parts = parts;
-        this.baseLayer = baseLayer;
         this.brokenParts = brokenParts;
         overrides = new Overrides(this);
         this.transforms = transforms;
     }
 
+
+
     @Override
     public ItemOverrideList getOverrides() {
         return overrides;
     }
+
 
     private static final class Overrides extends ItemOverrideList {
 
@@ -105,22 +113,23 @@ public class BakedMultiLayeredArmorItemModel extends BakedWrappedModel.Perspecti
                     modelID = ((MaterialDependentMLAAddon) addon).getUniqueMaterialID();
                 }
 
-                IBakedModel partModel;
-                if (parent.baseLayer.getKey().equals(addonID)) {
-                    partModel = parent.baseLayer.getValue().getModelByIdentifier(modelID);
-                } else if (broken && parent.brokenParts.containsKey(addonID) && parent.brokenParts.get(addonID) != null) {
-                    partModel = parent.brokenParts.get(addonID).getModelByIdentifier(modelID);
+                BakedArmorPartModel partModel;
+                if (broken && parent.brokenParts.containsKey(addonID) && parent.brokenParts.get(addonID) != null) {
+                    partModel = parent.brokenParts.get(addonID);
                 } else if (parent.parts.containsKey(addonID) && parent.parts.get(addonID) != null) {
-                    partModel = parent.parts.get(addonID).getModelByIdentifier(modelID);
+                    partModel = parent.parts.get(addonID);
                 } else {
                     continue;
                 }
+                if (partModel instanceof BakedMaterialPart)
+                    partModel= ((BakedMaterialPart) partModel).getModelByIdentifier(modelID);
+
 
                 quads.addAll(partModel.getQuads(null, null, 0));
             }
 
-            IBakedModel model = new ItemLayerModel.BakedItemModel(quads.build(), parent.getParticleTexture(), parent.transforms, parent.getOverrides(), null);
-
+//            IBakedModel model = new ItemLayerModel.BakedItemModel(quads.build(), parent.getParticleTexture(), parent.transforms, parent.getOverrides(), null);
+            IBakedModel model=new BipedBakedArmorModel(parent,quads.build(),parent.transforms,stack);
             return model;
         }
     }

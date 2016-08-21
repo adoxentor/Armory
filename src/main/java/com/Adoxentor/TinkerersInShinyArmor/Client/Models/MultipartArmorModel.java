@@ -4,17 +4,16 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.smithsmodding.armory.client.model.item.unbaked.ArmorPartModel;
+import com.smithsmodding.armory.client.model.item.unbaked.BakedArmorPartModel;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.MultipartBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.annotation.Immutable;
 import slimeknights.tconstruct.library.client.model.ModelHelper;
 import slimeknights.tconstruct.library.utils.ToolHelper;
 
@@ -53,7 +52,7 @@ public class MultipartArmorModel implements IModel {
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
         ImmutableMap.Builder<String,BakedArmorPartModel> builder = new ImmutableMap.Builder<String, BakedArmorPartModel>();
         for (Map.Entry<String,ArmorPartModel> entry:parts.entrySet()) {
-            builder.put(entry.getKey(),entry.getValue().bakeIt(state, format, bakedTextureGetter));
+            builder.put(entry.getKey(),entry.getValue().generateBakedComponentModel(state, format, bakedTextureGetter));
         }
         return new BakedMultipartArmorModel(builder.build(),transforms);
     }

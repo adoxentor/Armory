@@ -12,13 +12,16 @@ import com.smithsmodding.armory.api.materials.IArmorMaterial;
 import com.smithsmodding.armory.api.util.references.ModCreativeTabs;
 import com.smithsmodding.armory.api.util.references.References;
 import com.smithsmodding.armory.client.model.entity.ModelExtendedBiped;
+import com.smithsmodding.armory.client.model.item.baked.BakedMultiLayeredArmorItemModel;
 import com.smithsmodding.armory.common.addons.ArmorUpgradeMedieval;
 import com.smithsmodding.armory.common.factory.MedievalArmorFactory;
 import com.smithsmodding.armory.common.material.ChainLayer;
 import com.smithsmodding.armory.common.registry.MaterialRegistry;
 import com.smithsmodding.armory.common.registry.MedievalAddonRegistry;
 import com.smithsmodding.armory.util.armor.ArmorNBTHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -169,21 +172,26 @@ public class ArmorMedieval extends MultiLayeredArmor {
 
     @Override
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
-        ModelExtendedBiped tModel = new ModelExtendedBiped(1F, itemStack);
-
-        switch (this.getEquipmentSlot()) {
-            case HEAD:
-                tModel = new ModelExtendedBiped(1.5F, itemStack);
-                break;
-            case CHEST:
-                tModel = new ModelExtendedBiped(1.1F, itemStack);
-            case LEGS:
-                tModel = new ModelExtendedBiped(1.5F, itemStack);
-                break;
-            default:
-                break;
+//        ModelExtendedBiped tModel = new ModelExtendedBiped(1F, itemStack);
+//
+//        switch (this.getEquipmentSlot()) {
+//            case HEAD:
+//                tModel = new ModelExtendedBiped(1.5F, itemStack);
+//                break;
+//            case CHEST:
+//                tModel = new ModelExtendedBiped(1.1F, itemStack);
+//            case LEGS:
+//                tModel = new ModelExtendedBiped(1.5F, itemStack);
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        return tModel;
+        IBakedModel bakedModel=Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(itemStack,entityLiving.getEntityWorld(),entityLiving);
+        if(bakedModel instanceof ModelBiped) {
+            return (ModelBiped) bakedModel;
         }
-
-        return tModel;
+        return _default;
     }
 }

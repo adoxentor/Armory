@@ -1,7 +1,9 @@
 package com.smithsmodding.armory.client.model.loaders;
 
+import com.smithsmodding.armory.client.model.item.unbaked.ArmorPartModel;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.smithsmodding.armory.api.Client.IArmorPartRenderer;
 import com.smithsmodding.armory.api.armor.MultiLayeredArmor;
 import com.smithsmodding.armory.api.events.client.model.item.MultiLayeredArmorModelTextureLoadEvent;
 import com.smithsmodding.armory.api.model.deserializers.MultiLayeredArmorModelDeserializer;
@@ -12,6 +14,7 @@ import com.smithsmodding.armory.client.model.item.unbaked.components.ArmorSubCom
 import com.smithsmodding.armory.client.textures.MaterializedTextureCreator;
 import com.smithsmodding.armory.common.registry.ArmorRegistry;
 import com.smithsmodding.smithscore.client.model.unbaked.DummyModel;
+import com.smithsmodding.smithscore.util.common.Pair;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -64,11 +67,10 @@ public class MultiLayeredArmorModelLoader implements ICustomModelLoader {
             textureLoadEvent.PostClient();
 
             //Combine the original with the added
-            ImmutableMap.Builder<String, ResourceLocation> combineLayeredBuilder = new ImmutableMap.Builder<>();
-            ImmutableMap.Builder<String, ResourceLocation> combineBrokenBuilder = new ImmutableMap.Builder<>();
+            ImmutableMap.Builder<String, Pair<IArmorPartRenderer,ResourceLocation>> combineLayeredBuilder = new ImmutableMap.Builder<>();
+            ImmutableMap.Builder<String, Pair<IArmorPartRenderer,ResourceLocation>> combineBrokenBuilder = new ImmutableMap.Builder<>();
             ImmutableMap.Builder<ItemCameraTransforms.TransformType, TRSRTransformation> transformBuilder = new ImmutableMap.Builder<>();
 
-            ResourceLocation baseLocation = definition.getBaseLocation();
             combineLayeredBuilder.putAll(definition.getLayerLocations());
             combineBrokenBuilder.putAll(definition.getBrokenLocations());
             transformBuilder.putAll(definition.getTransforms());
@@ -76,25 +78,18 @@ public class MultiLayeredArmorModelLoader implements ICustomModelLoader {
                 combineLayeredBuilder.putAll(subDef.getLayerLocations());
                 combineBrokenBuilder.putAll(subDef.getBrokenLocations());
                 transformBuilder.putAll(subDef.getTransforms());
-
-                if (subDef.getBaseLocation() != null)
-                    baseLocation = subDef.getBaseLocation();
             }
-            definition = new MultiLayeredArmorModelDefinition(baseLocation, combineLayeredBuilder.build(), combineBrokenBuilder.build(), transformBuilder.build());
-
-            if (definition.getBaseLocation() == null)
-                throw new IllegalArgumentException("The given model does not have a Base assigned.");
+            definition = new MultiLayeredArmorModelDefinition(combineLayeredBuilder.build(), combineBrokenBuilder.build(), transformBuilder.build());
 
             //Create the final list builder.
-            ImmutableList.Builder<ResourceLocation> builder = ImmutableList.builder();
+            ImmutableList.Builder<ResourceLocation> builder = ImmutableList.builder();// TODO: 8/15/2016 remove
 
             //Define the model structure components.
-            ArmorSubComponentModel base = null;
-            HashMap<String, ArmorSubComponentModel> parts = new HashMap<String, ArmorSubComponentModel>();
-            HashMap<String, ArmorSubComponentModel> brokenParts = new HashMap<String, ArmorSubComponentModel>();
+            HashMap<String, ArmorPartModel> parts = new HashMap<String, ArmorPartModel>();
+            HashMap<String, ArmorPartModel> brokenParts = new HashMap<String, ArmorPartModel>();
 
             ResourceLocation location = null;
-            ArmorSubComponentModel partModel = null;
+            ArmorPartModel partModel = null;
             String name = "";
 
             //Iterate over all entries to define what they are
@@ -104,34 +99,26 @@ public class MultiLayeredArmorModelLoader implements ICustomModelLoader {
             //    * broken (Component texture used when the armor is broken)
             //    * base (The base layer of a armor (in case of MedievalArmor it is the chain base layer texture))
 
-            //Base layer
             try {
-                name = "Base";
-                location = definition.getBaseLocation();
-                partModel = new ArmorSubComponentModel(ImmutableList.of(location));
-                base = partModel;
-                if (location != null)
-                    builder.add(location);
-
-
-                for (Map.Entry<String, ResourceLocation> entry : definition.getLayerLocations().entrySet()) {
+                for (Map.Entry<String, Pair<IArmorPartRenderer,ResourceLocation>> entry : definition.getLayerLocations().entrySet()) {
                     name = entry.getKey();
-
-                    location = entry.getValue();
-                    partModel = new ArmorSubComponentModel(ImmutableList.of(location));
-
-                    parts.put(location.toString(), partModel);
-
+                    location = entry.getValue().getValue();
+                    partModel =new ArmorPartModel(entry.getValue().getKey(), ModelLoaderRegistry.getModelOrMissing(location));
+                    if(partModel== ModelLoaderRegistry.getMissingModel()) {
+                        ModLogger.getInstance().error(String.format("MLAModel {} has invalid subModel entry {}; Skipping layer.", modelLocation, name));
+                        continue;
+                    }
+                    parts.put(name, partModel);
                     if (location != null) {
-                        builder.add(location);
+                        builder.add(location);// FIXME: 8/16/2016
                     }
                 }
 
-                for (Map.Entry<String, ResourceLocation> entry : definition.getBrokenLocations().entrySet()) {
+                for (Map.Entry<String, Pair<IArmorPartRenderer,ResourceLocation>> entry : definition.getBrokenLocations().entrySet()) {
                     name = entry.getKey();
 
-                    location = entry.getValue();
-                    partModel = new ArmorSubComponentModel(ImmutableList.of(location));
+                    location = entry.getValue().getValue();
+                    partModel =new ArmorPartModel(entry.getValue().getKey(), new ArmorSubComponentModel(ImmutableList.of(location)));
 
                     brokenParts.put(location.toString(), partModel);
 
@@ -143,17 +130,11 @@ public class MultiLayeredArmorModelLoader implements ICustomModelLoader {
                 ModLogger.getInstance().error(String.format("MLAModel {} has invalid texture entry {}; Skipping layer.", modelLocation, name));
             }
 
-            //Check if at least a base layer is found.
-            if (base == null) {
-                ModLogger.getInstance().error(String.format("Tried to load a MLAModel {} without a base layer.", modelLocation));
-                return ModelLoaderRegistry.getMissingModel();
-            }
 
             //Construct the new unbaked model from the collected data.
-            IModel output = new MultiLayeredArmorItemModel(ArmorRegistry.getInstance().getArmor(armorInternalName), builder.build(), base, parts, brokenParts, ImmutableMap.copyOf(definition.getTransforms()));
+            IModel output = new MultiLayeredArmorItemModel(ArmorRegistry.getInstance().getArmor(armorInternalName), builder.build(), parts, brokenParts, ImmutableMap.copyOf(definition.getTransforms()));
 
             // Load all textures we need in to the creator.
-            MaterializedTextureCreator.registerBaseTexture(builder.build());
 
             return output;
         } catch (IOException e) {

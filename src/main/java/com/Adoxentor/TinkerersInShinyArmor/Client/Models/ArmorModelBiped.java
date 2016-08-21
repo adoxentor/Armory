@@ -3,33 +3,17 @@ package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
 import com.Adoxentor.TinkerersInShinyArmor.Armors.ArmorCore;
 import com.Adoxentor.TinkerersInShinyArmor.Client.ArmorWearPart;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.state.IBlockState;
+import com.smithsmodding.armory.api.Client.ModelType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
-import net.minecraftforge.common.model.TRSRTransformation;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Iddo on 6/23/2016.

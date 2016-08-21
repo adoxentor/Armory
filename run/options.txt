@@ -2,7 +2,7 @@ version:512
 invertYMouse:false
 mouseSensitivity:0.5
 fov:0.0
-gamma:0.0
+gamma:1.0
 saturation:0.0
 renderDistance:12
 guiScale:0
@@ -11,11 +11,11 @@ bobView:true
 anaglyph3d:false
 maxFps:120
 fboEnable:true
-difficulty:2
+difficulty:0
 fancyGraphics:true
-ao:2
+ao:0
 renderClouds:true
-resourcePacks:[]
+resourcePacks:["try apple - Copy.zip"]
 incompatibleResourcePacks:[]
 lastServer:
 lang:en_US
@@ -50,7 +50,7 @@ attackIndicator:1
 showSubtitles:false
 realmsNotifications:true
 enableWeakAttacks:false
-autoJump:true
+autoJump:false
 key_key.attack:-100
 key_key.use:-99
 key_key.forward:17

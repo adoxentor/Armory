@@ -1,4 +1,4 @@
-package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
+package com.smithsmodding.armory.api.Client;
 
 /**
  * Created by Iddo on 6/29/2016.

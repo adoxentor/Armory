@@ -1,0 +1,45 @@
+{
+  "plates":[
+    {
+      "texture":"armory:models/item/parts/helmet/in/back",
+      "transformation":{
+        "translation": [ 0, 0,0.46875 ],
+        "scale": [1, 1, 1 ],
+        "rotation":[{"x":0},{"y":0},{"z":0} ]
+      }
+    },
+    {
+      "texture":"armory:models/item/parts/helmet/in/front",
+      "transformation":{
+        "translation": [ 0, 0,-0.46875 ],
+        "scale": [1, 1, 1 ],
+        "rotation":[{"x":0},{"y":0},{"z":0} ]
+      }
+    },
+    {
+      "texture":"armory:models/item/parts/helmet/in/left",
+      "transformation":{
+        "translation": [ -0.46875, 0,0 ],
+        "scale": [1, 1, 1 ],
+        "rotation":[{"x":0},{"y":90},{"z":0} ]
+      }
+    },
+    {
+      "texture":"armory:models/item/parts/helmet/in/right",
+      "transformation":{
+        "translation": [ 0.46875, 0,0 ],
+        "scale": [1, 1, 1 ],
+        "rotation":[{"x":0},{"y":-90},{"z":0} ]
+      }
+    },
+    {
+      "texture":"armory:models/item/parts/helmet/in/top",
+      "transformation":{
+        "translation": [ 0, 0.46875,0 ],
+        "scale": [1, 1, 1 ],
+        "rotation":[{"x":90},{"y":0},{"z":0} ]
+      }
+    }
+
+  ]
+}

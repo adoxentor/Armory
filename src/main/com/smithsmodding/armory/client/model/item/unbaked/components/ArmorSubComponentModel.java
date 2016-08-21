@@ -4,10 +4,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.smithsmodding.armory.api.materials.IArmorMaterial;
+import com.smithsmodding.armory.client.model.item.ItemLayerModel;
 import com.smithsmodding.armory.client.model.item.baked.components.BakedSubComponentModel;
 import com.smithsmodding.armory.client.textures.MaterializedTextureCreator;
 import com.smithsmodding.armory.common.registry.MaterialRegistry;
-import com.smithsmodding.smithscore.client.model.unbaked.ItemLayerModel;
 import com.smithsmodding.smithscore.util.client.ModelHelper;
 import com.smithsmodding.smithscore.util.client.ResourceHelper;
 import com.smithsmodding.smithscore.util.client.color.MinecraftColor;
@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
@@ -23,6 +24,7 @@ import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,7 +36,7 @@ import java.util.Map;
 public class ArmorSubComponentModel extends ItemLayerModel implements IModel {
 
     private final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
-
+    static TextureAtlasSprite colors;
     /**
      * Creates a new unbaked model, given the parameters list of possible textures.
      *
@@ -60,7 +62,7 @@ public class ArmorSubComponentModel extends ItemLayerModel implements IModel {
      */
     @Override
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
-        return generateBackedComponentModel(state, format, bakedTextureGetter);
+        return generateBakedComponentModel(state, format, bakedTextureGetter);
     }
 
     /**
@@ -86,7 +88,7 @@ public class ArmorSubComponentModel extends ItemLayerModel implements IModel {
      * @param bakedTextureGetter Function to get the baked textures.
      * @return A baked model containing all individual possible textures this model can have.
      */
-    public BakedSubComponentModel generateBackedComponentModel(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+    public BakedSubComponentModel generateBakedComponentModel(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
         // Get ourselfs a normal model to use.
         IBakedModel base = super.bake(state, format, bakedTextureGetter);
 
@@ -124,11 +126,18 @@ public class ArmorSubComponentModel extends ItemLayerModel implements IModel {
                 for (BakedQuad quad : bakedModel2.getQuads(null, null, 0)) {
                     quads.add(ModelHelper.colorQuad(color, quad));
                 }
-
-
-                bakedModel2 = new ItemLayerModel.BakedItemModel(quads.build(), bakedModel2.getParticleTexture(), IPerspectiveAwareModel.MapWrapper.getTransforms(state), bakedModel2.getOverrides(), null);
+                ImmutableList<BakedQuad> bakedQuads=quads.build();
+//                if(state instanceof TRSRTransformation)
+//                    bakedQuads= fixQuadFacing(bakedQuads, ((TRSRTransformation) state));
+                bakedModel2 = new ItemLayerModel.BakedItemModel(bakedQuads, bakedModel2.getParticleTexture(), IPerspectiveAwareModel.MapWrapper.getTransforms(state), bakedModel2.getOverrides(), null);
 
             }
+//            else if (state instanceof TRSRTransformation)
+//            {
+//                ImmutableList<BakedQuad> bakedQuads = ImmutableList.copyOf(bakedModel2.getQuads(null,null,0));
+//                bakedQuads = fixQuadFacing(bakedQuads, ((TRSRTransformation) state));
+//                bakedModel2 = new ItemLayerModel.BakedItemModel(bakedQuads, bakedModel2.getParticleTexture(), IPerspectiveAwareModel.MapWrapper.getTransforms(state), bakedModel2.getOverrides(), null);
+//            }
 
             bakedMaterialModel.addMaterialModel(material, bakedModel2);
         }
@@ -136,5 +145,12 @@ public class ArmorSubComponentModel extends ItemLayerModel implements IModel {
         //And we are done, we have a ready to use, baked, textured and colored model.
         return bakedMaterialModel;
     }
-
+    //rotates enumfacing of the quads based on the state
+    public static ImmutableList<BakedQuad> fixQuadFacing(List<BakedQuad> originalQuads,TRSRTransformation transformation){
+        ImmutableList.Builder<BakedQuad> quads= new ImmutableList.Builder<>();
+        for(BakedQuad quad:originalQuads){
+            quads.add(new BakedQuad(quad.getVertexData(),quad.getTintIndex(), null,quad.getSprite(),false,quad.getFormat()));
+        }
+        return quads.build();
+    }
 }

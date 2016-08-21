@@ -1,26 +1,22 @@
-package com.Adoxentor.TinkerersInShinyArmor.Client.Models;
+package com.smithsmodding.armory.client.model.item.baked;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.Minecraft;
+import com.smithsmodding.armory.api.Client.BodyArmorPartRenderer;
+import com.smithsmodding.armory.api.Client.IArmorPartRenderer;
+import com.smithsmodding.armory.api.Client.ModelType;
+import com.smithsmodding.smithscore.client.model.baked.BakedWrappedModel;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverride;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.model.TRSRTransformation;
-import slimeknights.mantle.client.model.BakedWrapper;
 
 /**
  * Created by Iddo on 6/29/2016.
  */
-public class BakedArmorPartModel extends BakedWrapper {
+public class BakedArmorPartModel extends BakedWrappedModel {
     public boolean hidden = false;
     ModelBiped modelBiped;
     protected IArmorPartRenderer armorPartRenderer;
@@ -56,7 +52,7 @@ public class BakedArmorPartModel extends BakedWrapper {
 
         @Override
         public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
-            return ((BakedArmorPartModel) originalModel).parent.getOverrides().handleItemState(((BakedArmorPartModel) originalModel).parent,stack,world,entity);
+            return ((BakedArmorPartModel) originalModel).getParentModel().getOverrides().handleItemState(((BakedArmorPartModel) originalModel),stack,world,entity);
         }
     }
 }

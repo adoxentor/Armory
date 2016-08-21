@@ -34,6 +34,7 @@ public class ArmoryClientProxy extends ArmoryCommonProxy {
 
     private static ArmorComponentModelLoader armorComponentModelLoader = new ArmorComponentModelLoader();
     private static MultiLayeredArmorModelLoader multiLayeredArmorModelLoader = new MultiLayeredArmorModelLoader();
+    private static ArmorLayerModelLoader armorLayerModelLoader = new ArmorLayerModelLoader();
     private static HeatedItemModelLoader heatedItemModelLoader = new HeatedItemModelLoader();
     private static AnvilModelLoader anvilBlockModelLoader = new AnvilModelLoader();
     private static MaterializedItemModelLoader materializedItemModelLoader = new MaterializedItemModelLoader();
@@ -156,7 +157,7 @@ public class ArmoryClientProxy extends ArmoryCommonProxy {
         ModelLoaderRegistry.registerLoader(anvilBlockModelLoader);
         ModelLoaderRegistry.registerLoader(armorComponentModelLoader);
         ModelLoaderRegistry.registerLoader(materializedItemModelLoader);
-
+        ModelLoaderRegistry.registerLoader(armorLayerModelLoader);
         ArmoryClientInitializer.InitializeClient();
     }
 
